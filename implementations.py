@@ -64,13 +64,13 @@ class Mapper(Observable, Subscriber):
         super().__init__()
         self.transformer: Callable = transformer
 
-    def add(self, data):
+    def on_add(self, data):
         self.publish_add(self.transformer(data))
 
-    def remove(self, data):
+    def on_remove(self, data):
         self.publish_remove(self.transformer(data))
 
-    def update(self, old_data, new_data):
+    def on_update(self, old_data, new_data):
         self.publish_update(self.transformer(old_data), self.transformer(new_data))
 
     def pull(self) -> Iterable[dict]:
