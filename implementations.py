@@ -7,7 +7,6 @@ from utils import dict_add
 
 
 class Collection(Observable):
-
     def __init__(self, data: list | None = None):
         self.data: list[dict] = data or []
         super().__init__()
@@ -66,18 +65,13 @@ class Mapper(Observable, Subscriber):
         self.transformer: Callable = transformer
 
     def add(self, data):
-        if self.transformer(data):
-            self.publish_add(data)
+        self.publish_add(self.transformer(data))
 
     def remove(self, data):
-        if self.transformer(data):
-            self.publish_remove(data)
+        self.publish_remove(self.transformer(data))
 
     def update(self, old_data, new_data):
-        if self.transformer(old_data):
-            self.publish_remove(old_data)
-        if self.transformer(new_data):
-            self.publish_add(new_data)
+        self.publish_update(self.transformer(old_data), self.transformer(new_data))
 
     def pull(self) -> Iterable[dict]:
         for row in self.receiving_from.pull():
